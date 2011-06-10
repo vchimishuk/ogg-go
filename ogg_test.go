@@ -16,6 +16,9 @@ func TestNew(t *testing.T) {
 
 	fmt.Printf("Filename: %s\n", filename)
 
+	// TotalTime
+	fmt.Printf("TimeTotal: %f\n", file.TimeTotal())
+
 	// Comment.
 	comment := file.Comment()
 	fmt.Printf("Comment:\n")

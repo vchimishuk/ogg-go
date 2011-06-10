@@ -59,6 +59,10 @@ func (file *File) Info() *Info {
 	return info
 }
 
+func (file *File) TimeTotal() float64 {
+	return float64(C.ov_time_total(&(file.cOggFile), -1))
+}
+
 func (file *File) Close() {
 	C.ov_clear(&(file.cOggFile))
 }
