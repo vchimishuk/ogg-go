@@ -12,10 +12,13 @@ import (
 	"unsafe"
 )
 
+// The File structure defines an Ogg Vorbis file. 
 type File struct {
 	cOggFile C.OggVorbis_File
 }
 
+// New is the simplest function used to open and initialize an File structure.
+// It sets up all the related decoding structure. 
 func New(filename string) (file *File, err os.Error) {
 	cFilename := C.CString(filename)
 	defer C.free(unsafe.Pointer(cFilename))
@@ -30,6 +33,7 @@ func New(filename string) (file *File, err os.Error) {
 	return file, nil
 }
 
+// Comment returns Comment structure for the file.
 func (file *File) Comment() *Comment {
 	cComment := C.ov_comment(&(file.cOggFile), -1)
 
@@ -44,6 +48,7 @@ func (file *File) Comment() *Comment {
 	return comment
 }
 
+// Info returns Info structure for the file.
 func (file *File) Info() *Info {
 	cInfo := C.ov_info(&(file.cOggFile), -1)
 
@@ -59,10 +64,12 @@ func (file *File) Info() *Info {
 	return info
 }
 
+// TimeTotal returns the total time in seconds of the physical bitstream.
 func (file *File) TimeTotal() float64 {
 	return float64(C.ov_time_total(&(file.cOggFile), -1))
 }
 
+// Close release file  related resources.
 func (file *File) Close() {
 	C.ov_clear(&(file.cOggFile))
 }

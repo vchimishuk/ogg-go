@@ -2,6 +2,7 @@ package ogg
 
 import "C"
 
+// The Info structure contains basic information about the audio in a vorbis bitstream.
 type Info struct {
 	Version        int
 	Channels       int
