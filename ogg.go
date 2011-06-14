@@ -1,15 +1,19 @@
 package ogg
 
+// See native C API documentation: http://www.xiph.org/vorbis/doc/vorbisfile
+
 // #include <stdio.h>
 // #include <stdlib.h>
 // #include <vorbis/codec.h>
 // #include <vorbis/vorbisfile.h>
 // #include "comment_hlp.h"
+// #include "ogg_hlp.h"
 import "C"
 
 import (
 	"os"
 	"unsafe"
+//	"fmt"
 )
 
 // The File structure defines an Ogg Vorbis file. 
@@ -67,6 +71,27 @@ func (file *File) Info() *Info {
 // TimeTotal returns the total time in seconds of the physical bitstream.
 func (file *File) TimeTotal() float64 {
 	return float64(C.ov_time_total(&(file.cOggFile), -1))
+}
+
+// TimeTell returns the current decoding offset in seconds. 
+func (file *File) TimeTell() float64 {
+	return float64(C.ov_time_tell(&(file.cOggFile)))
+}
+
+type foo []int8
+
+// Read returns up to the specified number of bytes of decoded PCM audio.
+// Return number of read 16-bit words.
+func (file *File) Read(buf []int8) int {
+	n := len(buf)
+	if n == 0 {
+		return 0
+	}
+
+	bufLen := (_Ctypedef_size_t)(len(buf))
+	read := C.ogg_hlp_read(&(file.cOggFile), (*_Ctype_char)(&buf[0]), bufLen)
+ 
+	return int(read)
 }
 
 // Close release file  related resources.

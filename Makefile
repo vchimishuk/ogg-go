@@ -11,6 +11,7 @@ CGO_LDFLAGS=-lvorbisfile -lvorbis -lm -logg
 
 CGO_OFILES=\
         comment_hlp.o\
+	ogg_hlp.o\
 
 include $(GOROOT)/src/Make.pkg
 

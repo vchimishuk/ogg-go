@@ -19,7 +19,7 @@ func TestNew(t *testing.T) {
 	// TotalTime
 	fmt.Printf("TimeTotal: %f\n", file.TimeTotal())
 
-	// Comment.
+	// Comment
 	comment := file.Comment()
 	fmt.Printf("Comment:\n")
 	fmt.Printf("\tVendor: %s\n", comment.Vendor)
@@ -38,4 +38,13 @@ func TestNew(t *testing.T) {
 	fmt.Printf("\tBitrateNominal: %d\n", info.BitrateNominal)
 	fmt.Printf("\tBitrateLower: %d\n", info.BitrateLower)
 	fmt.Printf("\tBitrateWindow: %d\n", info.BitrateWindow)
+
+	// Read
+	fmt.Printf("Decoding...    ")
+
+	//secPerPercent := uint(file.TimeTotal() / 100)
+	buf := make([]int8, 1024)
+	for file.Read(buf) > 0 {
+		fmt.Printf("%f\n", file.TimeTell())
+	}
 }
