@@ -13,12 +13,22 @@ import "C"
 import (
 	"os"
 	"unsafe"
-//	"fmt"
+)
+
+const (
+	LittleEndian = 0
+	BigEndian = 1
 )
 
 // The File structure defines an Ogg Vorbis file. 
 type File struct {
 	cOggFile C.OggVorbis_File
+	// Specifies big or little endian byte packing.
+	Endianness int
+	// Specifies word size. Possible arguments are 1 for 8-bit samples, or 2 or 16-bit samples. Typical value is 2.
+	WordSize int
+	// Signed or unsigned data. 0 for unsigned, 1 for signed. Typically 1.
+	Signed bool
 }
 
 // New is the simplest function used to open and initialize an File structure.
@@ -28,6 +38,10 @@ func New(filename string) (file *File, err os.Error) {
 	defer C.free(unsafe.Pointer(cFilename))
 
 	file = new(File)
+	// Set default values.
+	file.Endianness = LittleEndian
+	file.WordSize = 2
+	file.Signed = true
 
 	r := C.ov_fopen(cFilename, &(file.cOggFile))
 	if r != 0 {
@@ -83,13 +97,22 @@ type foo []int8
 // Read returns up to the specified number of bytes of decoded PCM audio.
 // Return number of read 16-bit words.
 func (file *File) Read(buf []int8) int {
-	n := len(buf)
-	if n == 0 {
+	if len(buf) == 0 {
 		return 0
 	}
 
+	var signed int 
+	if file.Signed {
+		signed = 1
+	} else {
+		signed = 0
+	}
+
 	bufLen := (_Ctypedef_size_t)(len(buf))
-	read := C.ogg_hlp_read(&(file.cOggFile), (*_Ctype_char)(&buf[0]), bufLen)
+	read := C.ogg_hlp_read(&(file.cOggFile), (*_Ctype_char)(&buf[0]), bufLen,
+		_Ctype_int(file.Endianness),
+		_Ctype_int(file.WordSize),
+		_Ctype_int(signed))
  
 	return int(read)
 }

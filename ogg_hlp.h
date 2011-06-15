@@ -6,4 +6,4 @@
  * Read size bytes from the stream into a buffer.
  * Returns actual number of read bytes.
  */
- size_t ogg_hlp_read(OggVorbis_File *vf, char *buf, size_t size);
+size_t ogg_hlp_read(OggVorbis_File *vf, char *buf, size_t size, int bigendianp, int word, int sgned);
