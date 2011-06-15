@@ -43,7 +43,7 @@ func TestNew(t *testing.T) {
 	fmt.Printf("Decoding...    ")
 
 	secPerPercent := file.TimeTotal() / 100
-	buf := make([]int8, 4096)
+	buf := make([]byte, 4096)
 	for file.Read(buf) > 0 {
 		percentsDone := uint(file.TimeTell() / secPerPercent)
 		fmt.Printf("%d%%\n", percentsDone)

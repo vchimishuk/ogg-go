@@ -92,11 +92,9 @@ func (file *File) TimeTell() float64 {
 	return float64(C.ov_time_tell(&(file.cOggFile)))
 }
 
-type foo []int8
-
 // Read returns up to the specified number of bytes of decoded PCM audio.
 // Return number of read 16-bit words.
-func (file *File) Read(buf []int8) int {
+func (file *File) Read(buf []byte) int {
 	if len(buf) == 0 {
 		return 0
 	}
@@ -109,7 +107,8 @@ func (file *File) Read(buf []int8) int {
 	}
 
 	bufLen := (_Ctypedef_size_t)(len(buf))
-	read := C.ogg_hlp_read(&(file.cOggFile), (*_Ctype_char)(&buf[0]), bufLen,
+	bp := (*_Ctype_char)(unsafe.Pointer(&buf[0]))
+	read := C.ogg_hlp_read(&(file.cOggFile), bp, bufLen,
 		_Ctype_int(file.Endianness),
 		_Ctype_int(file.WordSize),
 		_Ctype_int(signed))
